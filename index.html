@@ -90,7 +90,7 @@
   #errbar{position:fixed;left:0;right:0;top:0;background:#7f1d1d;color:#fee2e2;border-bottom:2px solid #ef4444;
     padding:8px 12px;font-size:13px;display:none;z-index:9999}
 
-  /* task area + “Last RPM” near timer */
+  /* task area + “Last CPM” near timer */
   .playbelt{
     display:grid; grid-template-columns: 1fr 280px; gap:12px; margin-top:12px; align-items:stretch;
   }
@@ -120,8 +120,8 @@
   .owned-badge{position:absolute; top:8px; right:8px; background:#052e15; color:#a7f3d0; border:1px solid #22c55e; border-radius:999px; padding:2px 8px; font-size:11px; font-weight:900;}
   .locked{opacity:.5; border-style:dashed}
 
-  /* hide live RPM; show “Last RPM” instead */
-  #rpm{display:none;}
+  /* hide live CPM; show “Last CPM” instead */
+  #cpm{display:none;}
 
   /* === Chests (loot) === */
   .loot-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -150,9 +150,9 @@
       <div class="stats">
         <div class="stat"><div class="label">Bank (total)</div><div id="bankTotal" class="val">0</div></div>
         <div class="stat"><div class="label">Correct (current)</div><div id="correct" class="val">0</div></div>
-        <div class="stat"><div class="label">RPM (correct/min)</div><div id="rpm" class="val">0.0</div></div>
+        <div class="stat"><div class="label">CPM (correct/min)</div><div id="cpm" class="val">0.0</div></div>
       </div>
-      <div class="pers">Personal best RPM: <b id="bestRpm">0.0</b></div>
+      <div class="pers">Personal best CPM: <b id="bestCpm">0.0</b></div>
       <div id="runFeedback" class="feedback"></div>
       <div class="row" style="background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px">
         <span>Goal (correct/min):</span>
@@ -161,7 +161,7 @@
       </div>
     </div>
 
-    <!-- TIMER + TASK + LAST RPM -->
+    <!-- TIMER + TASK + LAST CPM -->
     <div class="card">
       <div class="time-row">
         <div class="row">
@@ -190,8 +190,8 @@
           <div id="hint" class="hint" aria-live="polite"></div>
         </div>
         <div class="sideStat">
-          <div class="sideStat__label">Last RPM</div>
-          <div id="lastRpm" class="sideStat__value">0.0</div>
+          <div class="sideStat__label">Last CPM</div>
+          <div id="lastCpm" class="sideStat__value">0.0</div>
         </div>
       </div>
     </div>
@@ -245,7 +245,7 @@
     <div class="modebar" style="margin-bottom:8px">
       <span class="caps">chests</span>
       <label style="display:flex;align-items:center;gap:8px;margin-left:auto">
-        <input id="lootToggle" type="checkbox"> Enable chests (RPM-based rewards)
+        <input id="lootToggle" type="checkbox"> Enable chests (CPM-based rewards)
       </label>
     </div>
 
@@ -269,13 +269,13 @@
 
         <div class="loot-box">
           <div class="loot-tier tier-silver">Silver Chest</div>
-          <div style="font-size:12px;color:#9aa3b2">Better odds (RPM ≥ 30)</div>
+          <div style="font-size:12px;color:#9aa3b2">Better odds (CPM ≥ 30)</div>
           <div class="badge-hard">In queue: <b id="silverCount">0</b></div>
         </div>
 
         <div class="loot-box">
           <div class="loot-tier tier-gold">Gold Chest</div>
-          <div style="font-size:12px;color:#9aa3b2">Best odds (RPM ≥ 50)</div>
+          <div style="font-size:12px;color:#9aa3b2">Best odds (CPM ≥ 50)</div>
           <div class="badge-hard">In queue: <b id="goldCount">0</b></div>
         </div>
       </div>
@@ -296,14 +296,14 @@
   <div class="card">
     <div style="font-weight:800;margin-bottom:8px">Speed → Extra points</div>
     <div style="display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))">
-      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>≥ 10 RPM</span><span>+ 10</span></div>
-      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 20 RPM</span><span>+ 30</span></div>
-      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 30 RPM</span><span>+ 50</span></div>
-      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 40 RPM</span><span>+ 70</span></div>
-      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 50 RPM</span><span>+ 100</span></div>
-      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 60 RPM</span><span>+ 200</span></div>
+      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>≥ 10 CPM</span><span>+ 10</span></div>
+      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 20 CPM</span><span>+ 30</span></div>
+      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 30 CPM</span><span>+ 50</span></div>
+      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 40 CPM</span><span>+ 70</span></div>
+      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 50 CPM</span><span>+ 100</span></div>
+      <div class="row" style="justify-content:space-between;background:#0b1223;border:1px dashed #334155;border-radius:12px;padding:8px 10px"><span>&gt; 60 CPM</span><span>+ 200</span></div>
     </div>
-    <div style="color:#9aa3b2;font-size:13px;margin-top:6px">Bank per round = floor(RPM) + bonus</div>
+    <div style="color:#9aa3b2;font-size:13px;margin-top:6px">Bank per round = floor(CPM) + bonus</div>
   </div>
 
   <!-- COLLECTION (only visible in Brainrot mode) -->
@@ -339,7 +339,7 @@
           <th class="right">Correct</th>
           <th class="right">Wrong</th>
           <th class="right">Duration (s)</th>
-          <th class="right rpm-strong">RPM</th>
+          <th class="right rpm-strong">CPM</th>
           <th class="right">Bonus</th>
           <th class="right">Bank +</th>
           <th class="right">Bank (sum)</th>
@@ -387,7 +387,7 @@ const pad=n=>String(n).padStart(2,'0');
 const shuffle=a=>{ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 const fmtTime=s=>{ if(s===null) return '—'; s=Math.max(0,Math.ceil(s)); return `${pad(Math.floor(s/60))}:${pad(s%60)}`; };
 const ts=()=>{ const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; };
-const bonusForRPM=r=> r>60?200:r>50?100:r>40?70:r>30?50:r>20?30:r>=10?10:0;
+const bonusForCPM=r=> r>60?200:r>50?100:r>40?70:r>30?50:r>20?30:r>=10?10:0;
 
 /* ========= Brainrot cards ========= */
 const TIERS = {
@@ -426,8 +426,8 @@ const BRAINROT = [
   {name:"Pot Hotspot",                  tier:"Legendary"}
 ];
 
-function pickBrainrot(rpm){
-  const steps = Math.max(0, Math.floor((rpm - 20)/10));
+function pickBrainrot(cpm){
+  const steps = Math.max(0, Math.floor((cpm - 20)/10));
   const pool = BRAINROT.map((card, idx) => {
     let w = TIERS[card.tier].weight;
     if(steps>0){
@@ -478,8 +478,8 @@ const diffForFamily=(f,isAdd)=> ({key: isAdd?diffForAdd(f.c):diffForMul(f.c), la
 const DIFF_ORDER=['kongle','furu','gran','bjork'];
 
 /* ========= Storage ========= */
-const KEY='fact_families_v5_en';
-let bankTotal=0, bestRPM=0, goalRPM=null, results=[];
+const KEY='fact_families_v6_en_cpm';
+let bankTotal=0, bestCPM=0, goalCPM=null, results=[];
 let mode='add', brainrotOn=false;
 let selectedAdd=new Set(), selectedMul=new Set();
 let collection = {};     // { name: count }
@@ -513,7 +513,7 @@ function loadStore(){
   try{
     const raw=localStorage.getItem(KEY); if(!raw) return;
     const o=JSON.parse(raw);
-    bankTotal=+o.bankTotal||0; bestRPM=+o.bestRPM||0; goalRPM=(o.goalRPM==null?null:+o.goalRPM);
+    bankTotal=+o.bankTotal||0; bestCPM=+o.bestCPM||0; goalCPM=(o.goalCPM==null?null:+o.goalCPM);
     results=Array.isArray(o.results)?o.results:[];
     mode=(o.mode==='mul')?'mul':'add';
     brainrotOn = !!o.brainrotOn;
@@ -526,7 +526,7 @@ function loadStore(){
 function saveStore(){
   try{
     const obj = {
-      bankTotal,bestRPM,goalRPM,results,mode,brainrotOn,
+      bankTotal,bestCPM,goalCPM,results,mode,brainrotOn,
       selAdd:[...selectedAdd], selMul:[...selectedMul],
       collection, collectionValue
     };
@@ -590,12 +590,12 @@ const getElapsed = () => !startMs ? 0 : (((paused?pauseStart:Date.now())-startMs
 /* ========= HUD ========= */
 function updateHUD(){
   const e=getElapsed();
-  const rpm = e>0 ? (correct/(e/60)) : 0;
+  const cpm = e>0 ? (correct/(e/60)) : 0;
   $('correct').textContent=String(correct);
-  $('rpm').textContent=rpm.toFixed(1);
+  $('cpm').textContent=cpm.toFixed(1);
   $('bankTotal').textContent=String(bankTotal);
-  $('bestRpm').textContent=bestRPM.toFixed(1);
-  $('goalState').style.display=(goalRPM!=null && rpm>=goalRPM)?'inline':'none';
+  $('bestCpm').textContent=bestCPM.toFixed(1);
+  $('goalState').style.display=(goalCPM!=null && cpm>=goalCPM)?'inline':'none';
 
   if(sessionDur===0){
     $('timeLeft').textContent = fmtTime(e);
@@ -694,11 +694,11 @@ $('pauseBtn').addEventListener('click',()=>{ if(!running) return; if(!paused){ p
 $('stopBtn').addEventListener('click',()=>{ if(!running) return; finishRun(); });
 $('resetBtn').addEventListener('click',()=>{
   if(!confirm('Reset all saved results, bank and collection?')) return;
-  bankTotal=0; bestRPM=0; results=[];
+  bankTotal=0; bestCPM=0; results=[];
   collection={}; collectionValue=0;
   lootBronze=0; lootSilver=0; lootGold=0; pityRare=0; pityEpic=0; dust=0;
   renderResults(); renderCollection(); renderLoot(); updateHUD(); saveStore();
-  $('lastRpm').textContent='0.0'; clearHint();
+  $('lastCpm').textContent='0.0'; clearHint();
 });
 
 function startCountdown(){
@@ -757,14 +757,14 @@ function renderCollection(){
 }
 
 /* ========= Sigma banner (if brainrot enabled) ========= */
-function awardCardsWithSigma(rpm){
+function awardCardsWithSigma(cpm){
   const maxPerRun = 5;
-  const extra = Math.floor(rpm / 40);
+  const extra = Math.floor(cpm / 40);
   const n = Math.max(1, Math.min(1 + extra, maxPerRun));
 
   const gained = [];
   for(let i=0;i<n;i++){
-    const card = pickBrainrot(rpm);
+    const card = pickBrainrot(cpm);
     const tierInfo = TIERS[card.tier];
     collection[card.name] = (collection[card.name]||0) + 1;
     collectionValue += tierInfo.value;
@@ -885,19 +885,19 @@ function showOpenResult(list){
   box.innerHTML = lines.join('<br>');
 }
 
-/* ========= Loot: chests from RPM (every 5 over 15) ========= */
-function grantChestsFromRPM(rpm){
+/* ========= Loot: chests from CPM (every 5 over 15) ========= */
+function grantChestsFromCPM(cpm){
   if(!lootOn) return;
   let n = 0;
-  if(rpm >= 15) {
-    n = 1 + Math.floor((rpm - 15) / 5);
+  if(cpm >= 15) {
+    n = 1 + Math.floor((cpm - 15) / 5);
     n = Math.min(n, 10); // cap
   }
   if(n <= 0) return;
 
   let tier = 'bronze';
-  if(rpm >= 50) tier = 'gold';
-  else if(rpm >= 30) tier = 'silver';
+  if(cpm >= 50) tier = 'gold';
+  else if(cpm >= 30) tier = 'silver';
 
   if(tier === 'gold') lootGold += n;
   else if(tier === 'silver') lootSilver += n;
@@ -924,7 +924,7 @@ function renderResults(){
       <td class="right">${r.correct}</td>
       <td class="right">${r.wrong}</td>
       <td class="right">${r.dur}</td>
-      <td class="right rpm-strong">${(Number.isFinite(+r.rpm)?(+r.rpm).toFixed(1):'0.0')}</td>
+      <td class="right rpm-strong">${(Number.isFinite(+r.cpm)?(+r.cpm).toFixed(1):'0.0')}</td>
       <td class="right">${r.bonus}</td>
       <td class="right bank">+${r.add}</td>
       <td class="right bank">${sums[i]}</td>
@@ -932,8 +932,8 @@ function renderResults(){
   `).join('');
 
   $('bankTotal').textContent = acc || 0;
-  $('bestRpm').textContent  = bestRPM.toFixed(1);
-  $('lastRpm').textContent = results[0] ? (Number(results[0].rpm).toFixed(1)) : '0.0';
+  $('bestCpm').textContent  = bestCPM.toFixed(1);
+  $('lastCpm').textContent = results[0] ? (Number(results[0].cpm).toFixed(1)) : '0.0';
 }
 
 /* ========= Duration chips ========= */
@@ -949,7 +949,7 @@ $('durChips').addEventListener('click',(e)=>{
 
 /* ========= Goal ========= */
 $('goalInput').addEventListener('change',()=>{
-  const v=$('goalInput').value.trim(); goalRPM = v==='' ? null : Math.max(1, Math.min(200, +v)); saveStore();
+  const v=$('goalInput').value.trim(); goalCPM = v==='' ? null : Math.max(1, Math.min(200, +v)); saveStore();
 });
 
 /* ========= Mobile keypad ========= */
@@ -989,11 +989,11 @@ function updateBrainrotUI(){
 function finishRun(){
   const endRef=paused?pauseStart:Date.now();
   const elapsed=Math.max(0,(endRef-startMs-pauseAccum)/1000);
-  const rpm = elapsed>0 ? (correct/(elapsed/60)) : 0;
-  const base=Math.floor(rpm), bonus=bonusForRPM(rpm), add=(isFinite(base)?base:0) + (isFinite(bonus)?bonus:0);
-  const newRecord=rpm>bestRPM, goalHit=(goalRPM!=null && rpm>=goalRPM);
+  const cpm = elapsed>0 ? (correct/(elapsed/60)) : 0;
+  const base=Math.floor(cpm), bonus=bonusForCPM(cpm), add=(isFinite(base)?base:0) + (isFinite(bonus)?bonus:0);
+  const newRecord=cpm>bestCPM, goalHit=(goalCPM!=null && cpm>=goalCPM);
   running=false; clearInterval(tickTimer);
-  bankTotal += add; if(newRecord) bestRPM=rpm;
+  bankTotal += add; if(newRecord) bestCPM=cpm;
 
   const usedFamIds=new Set(); for(let i=0;i<idx;i++){ const it=queue[i]; if(it&&it.fam) usedFamIds.add(it.fam); }
   const fams=[...usedFamIds].map(famLabel).join(' | ');
@@ -1001,22 +1001,22 @@ function finishRun(){
 
   results.unshift({ time:ts(), mode:modeLabel, fams, correct, wrong,
     dur:Math.round(sessionDur===0?elapsed:Math.min(sessionDur,elapsed)),
-    rpm:+(isFinite(rpm)?rpm.toFixed(1):'0'), bonus, add });
+    cpm:+(isFinite(cpm)?cpm.toFixed(1):'0'), bonus, add });
 
-  $('lastRpm').textContent = rpm.toFixed(1);
+  $('lastCpm').textContent = cpm.toFixed(1);
 
   renderResults(); updateHUD(); saveStore();
 
   const msg =
     newRecord && goalHit ? 'New personal best and goal reached.' :
     newRecord ? 'New personal best.' :
-    goalHit ? 'Goal reached.' : `Done – RPM: ${rpm.toFixed(1)}`;
+    goalHit ? 'Goal reached.' : `Done – CPM: ${cpm.toFixed(1)}`;
   $('runFeedback').textContent = msg;
   $('eq').innerHTML=`<span class="cell" style="font-size:clamp(18px,3vw,32px)">Ready for a new round – press Start</span>`;
   clearHint();
 
-  if(brainrotOn){ awardCardsWithSigma(rpm); }
-  grantChestsFromRPM(rpm); // RPM-based chests (every 5 over 15)
+  if(brainrotOn){ awardCardsWithSigma(cpm); }
+  grantChestsFromCPM(cpm); // CPM-based chests (every 5 over 15)
   renderLoot();
 }
 
