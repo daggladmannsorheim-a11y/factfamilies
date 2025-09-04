@@ -63,7 +63,7 @@
   .modebar .chip{padding:8px 12px}
 
   .fam-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
-  .badge{background:#0b1223;border:1px solid #334155;border-radius:999px;padding:4px 8px;font-size:12px;color:#cbd5e1}
+
   .fam-section{border-top:1px solid #22314a;padding-top:8px;margin-top:10px}
   .fam-section h4{margin:4px 0 8px;font-size:13px;color:#cbd5e1;font-weight:900;letter-spacing:.3px}
   .fam-grid{display:grid;gap:6px;grid-template-columns:repeat(8,minmax(0,1fr))}
@@ -223,19 +223,10 @@
       <span class="caps">families</span>
       <button id="famAll" class="btn" type="button">Select all</button>
       <button id="famNone" class="btn" type="button">Clear</button>
-      <button id="famKongle" class="btn" type="button">All “Kongle”</button>
-      <button id="famFuru" class="btn" type="button">All “Furu”</button>
-      <button id="famGran" class="btn" type="button">All “Gran”</button>
-      <button id="famBjork" class="btn" type="button">All “Bjørk”</button>
-      <span class="badge">Selected: <span id="famCount">0</span></span>
-
-      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span class="caps">difficulty</span>
-        <span class="diff kongle">Kongle</span>
-        <span class="diff furu">Furu</span>
-        <span class="diff gran">Gran</span>
-        <span class="diff bjork">Bjørk</span>
-      </div>
+      <button id="famKongle" class="btn" type="button">All Lindsley</button>
+      <button id="famFuru" class="btn" type="button">All Melroe</button>
+      <button id="famGran" class="btn" type="button">All Binder</button>
+      <button id="famBjork" class="btn" type="button">All Calkin</button>
     </div>
     <div id="famSections"></div>
   </div>
@@ -470,15 +461,15 @@ const familyItemsMul=f=>[
 ];
 const famLabel=id=>id.slice(2).split('-').join(' ');
 
-/* ========= Difficulty labels (kept Norwegian tags as categories) ========= */
-const DIFF_LABEL={kongle:'Kongle', furu:'Furu', gran:'Gran', bjork:'Bjørk'};
+/* ========= Level labels (renamed) ========= */
+const DIFF_LABEL={kongle:'Lindsley', furu:'Melroe', gran:'Binder', bjork:'Calkin'};
 const diffForAdd=c => c<=6?'kongle':c<=10?'furu':c<=15?'gran':'bjork';
 const diffForMul=z => z<=25?'kongle':z<=64?'furu':z<=100?'gran':'bjork';
 const diffForFamily=(f,isAdd)=> ({key: isAdd?diffForAdd(f.c):diffForMul(f.c), label: DIFF_LABEL[isAdd?diffForAdd(f.c):diffForMul(f.c)]});
 const DIFF_ORDER=['kongle','furu','gran','bjork'];
 
 /* ========= Storage ========= */
-const KEY='fact_families_v6_en_cpm';
+const KEY='fact_families_v7_en_cpm_levels';
 let bankTotal=0, bestCPM=0, goalCPM=null, results=[];
 let mode='add', brainrotOn=false;
 let selectedAdd=new Set(), selectedMul=new Set();
@@ -1034,7 +1025,7 @@ function init(){
   renderLoot();
 
   const activeBtn = document.querySelector('#durChips .chip.active');
-  const d = Number(activeBtn && activeBtn.dataset ? activeBtn.dataset.dur : 60);
+  const d = Number(activeBtn && activeBtn.dataset ? activedBtn.dataset.dur : 60);
   $('timeLeft').textContent = (d===0)?'00:00':fmtTime(d);
   $('progressWrap').style.visibility=(d===0)?'hidden':'visible';
 
