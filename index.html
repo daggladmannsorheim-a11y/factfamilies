@@ -91,18 +91,12 @@
   #errbar{position:fixed;left:0;right:0;top:0;background:#7f1d1d;color:#fee2e2;border-bottom:2px solid #ef4444;
     padding:8px 12px;font-size:13px;display:none;z-index:9999}
 
-  /* task area + “Last CPM” near timer */
-  .playbelt{
-    display:grid; grid-template-columns: 1fr 280px; gap:12px; margin-top:12px; align-items:stretch;
-  }
+  .playbelt{display:grid; grid-template-columns: 1fr 280px; gap:12px; margin-top:12px; align-items:stretch;}
   @media (max-width:900px){ .playbelt{ grid-template-columns: 1fr; } }
-  .sideStat{
-    background:#0b1223; border:1px solid var(--ring); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:6px;
-  }
+  .sideStat{background:#0b1223; border:1px solid var(--ring); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:6px;}
   .sideStat__label{font-size:12px;color:#9aa3b2;letter-spacing:.3px}
   .sideStat__value{font-variant-numeric:tabular-nums;font-weight:900;font-size:28px;color:#fcd34d}
 
-  /* Collection (brainrot cards) */
   .collection-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
   .collection-grid{display:grid;gap:8px;grid-template-columns:repeat(5,minmax(0,1fr))}
   @media (max-width:900px){.collection-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -121,10 +115,8 @@
   .owned-badge{position:absolute; top:8px; right:8px; background:#052e15; color:#a7f3d0; border:1px solid #22c55e; border-radius:999px; padding:2px 8px; font-size:11px; font-weight:900;}
   .locked{opacity:.5; border-style:dashed}
 
-  /* hide live CPM; show “Last CPM” instead */
   #cpm{display:none;}
 
-  /* === Chests (loot) === */
   .loot-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
   .loot-grid{display:grid;gap:8px;grid-template-columns:repeat(3,minmax(0,1fr))}
   .loot-box{background:#0b1223;border:1px solid var(--ring);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
@@ -228,13 +220,12 @@
       <button id="famFuru" class="btn" type="button">All Melroe</button>
       <button id="famGran" class="btn" type="button">All Binder</button>
       <button id="famBjork" class="btn" type="button">All Calkin</button>
-      <!-- restored selected counter -->
       <span class="badge">Selected: <span id="famCount">0</span></span>
     </div>
     <div id="famSections"></div>
   </div>
 
-  <!-- CHESTS (optional, fully local) -->
+  <!-- CHESTS -->
   <div class="card">
     <div class="modebar" style="margin-bottom:8px">
       <span class="caps">chests</span>
@@ -300,7 +291,7 @@
     <div style="color:#9aa3b2;font-size:13px;margin-top:6px">Bank per round = floor(CPM) + bonus</div>
   </div>
 
-  <!-- COLLECTION (only visible in Brainrot mode) -->
+  <!-- COLLECTION (Brainrot) -->
   <div id="collectionCard" class="card" style="display:none">
     <div class="collection-head">
       <div style="font-weight:800">Brainrot Collection</div>
@@ -1010,7 +1001,7 @@ function finishRun(){
   clearHint();
 
   if(brainrotOn){ awardCardsWithSigma(cpm); }
-  grantChestsFromCPM(cpm); // CPM-based chests (every 5 over 15)
+  grantChestsFromCPM(cpm);
   renderLoot();
 }
 
@@ -1051,8 +1042,7 @@ function init(){
   renderLoot();
 
   const activeBtn = document.querySelector('#durChips .chip.active');
-  const d = Number(activeBtn && activeBtn.dataset ? acti
-  veBtn.dataset.dur : 60);
+  const d = Number(activeBtn && activeBtn.dataset ? activeBtn.dataset.dur : 60); // <- fixed
   $('timeLeft').textContent = (d===0)?'00:00':fmtTime(d);
   $('progressWrap').style.visibility=(d===0)?'hidden':'visible';
 
