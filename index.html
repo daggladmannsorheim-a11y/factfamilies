@@ -1014,6 +1014,29 @@ function finishRun(){
   renderLoot();
 }
 
+/* ========= Bulk-select helpers ========= */
+function setSelectionByPredicate(pred){
+  const set = selectionSet();
+  set.clear();
+  for(const f of familiesForMode(mode)){
+    if(pred(f)) set.add(f.id);
+  }
+  famCount.textContent = [...set].length;
+  saveStore();
+  renderFamilySections();
+}
+function selectAllFamilies(){ setSelectionByPredicate(()=>true); }
+function clearAllFamilies(){
+  const set = selectionSet();
+  set.clear();
+  famCount.textContent = 0;
+  saveStore();
+  renderFamilySections();
+}
+function selectByDiff(diffKey){
+  setSelectionByPredicate(f => diffForFamily(f, mode==='add').key === diffKey);
+}
+
 /* ========= Init ========= */
 function init(){
   loadStore();
@@ -1028,16 +1051,27 @@ function init(){
   renderLoot();
 
   const activeBtn = document.querySelector('#durChips .chip.active');
-  const d = Number(activeBtn && activeBtn.dataset ? activeBtn.dataset.dur : 60);
+  const d = Number(activeBtn && activeBtn.dataset ? acti
+  veBtn.dataset.dur : 60);
   $('timeLeft').textContent = (d===0)?'00:00':fmtTime(d);
   $('progressWrap').style.visibility=(d===0)?'hidden':'visible';
 
+  // Keyboard shortcuts
   document.addEventListener('keydown',e=>{
     const k=e.key;
     if(k==='Enter'){ e.preventDefault(); if(!running) $('startBtn').click(); }
     if(k===' '||k==='Spacebar'){ e.preventDefault(); $('pauseBtn').click(); }
     if(k==='s'||k==='S'){ e.preventDefault(); $('stopBtn').click(); }
   });
+
+  // Bind bulk-selection toolbar buttons
+  const bind = (id, fn) => { const el = $(id); if(el) el.addEventListener('click', fn); };
+  bind('famAll',  selectAllFamilies);
+  bind('famNone', clearAllFamilies);
+  bind('famKongle', () => selectByDiff('kongle')); // All Lindsley
+  bind('famFuru',  () => selectByDiff('furu'));    // All Melroe
+  bind('famGran',  () => selectByDiff('gran'));    // All Binder
+  bind('famBjork', () => selectByDiff('bjork'));   // All Calkin
 }
 document.addEventListener('DOMContentLoaded', init);
 
