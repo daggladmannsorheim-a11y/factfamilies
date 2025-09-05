@@ -652,6 +652,7 @@ function clearHint(){
   const hint = $('hint'); if(hint) hint.textContent = '';
 }
 
+/* ========= Build queue / next ========= */
 function buildQueueFromSelection(){
   const list=familiesForMode(mode), sel=selectionSet();
   const chosen=list.filter(f=>sel.has(f.id));
@@ -659,15 +660,39 @@ function buildQueueFromSelection(){
   shuffle(items); return items;
 }
 function nextItem(){
-  if(idx>=queue.length){ queue=queue.concat(buildQueueFromSelection()); if(queue.length===0){ finishRun(); return; } }
+  if(idx>=queue.length){ queue=queue.concat(buildQueueFromSelection()); if(queue.length===0){ finishRun('empty'); return; } }
   setEquation(queue[idx]); updateHUD();
 }
+
+/* ========= Submit ========= */
+const ERROR_LIMIT = 3; // end round on the 4th error
+
 function submitAnswer(){
   if(!running||paused) return;
   const val=$('ansInput')?.value?.trim(); if(val==='') return;
   const ok=(+val===currentSolution);
-  if(ok){ correct++; markInput(true); }
-  else { wrong++; markInput(false); queue.splice(idx+1,0,currentItem,currentItem,currentItem); }
+
+  if(ok){
+    correct++; markInput(true);
+    idx++;
+    clearHint();
+    setTimeout(nextItem,70); updateHUD();
+    return;
+  }
+
+  // wrong
+  wrong++; markInput(false);
+
+  // If exceeded error limit, end immediately with no rewards/points
+  if(wrong > ERROR_LIMIT){
+    idx++; // advance index to count this attempt
+    clearHint();
+    finishRun('errors');
+    return;
+  }
+
+  // Otherwise, penalize by requeuing the same item thrice
+  queue.splice(idx+1,0,currentItem,currentItem,currentItem);
   idx++;
   clearHint();
   setTimeout(nextItem,70); updateHUD();
@@ -676,7 +701,7 @@ function submitAnswer(){
 /* ========= Start/Stop + countdown ========= */
 $('startBtn').addEventListener('click',()=>{ if(!running) startCountdown(); });
 $('pauseBtn').addEventListener('click',()=>{ if(!running) return; if(!paused){ paused=true; pauseStart=Date.now(); $('runFeedback').textContent='Paused'; } else { paused=false; pauseAccum += Date.now()-pauseStart; pauseStart=0; $('runFeedback').textContent=''; } });
-$('stopBtn').addEventListener('click',()=>{ if(!running) return; finishRun(); });
+$('stopBtn').addEventListener('click',()=>{ if(!running) return; finishRun('manual'); });
 $('resetBtn').addEventListener('click',()=>{
   if(!confirm('Reset all saved results, bank and collection?')) return;
   bankTotal=0; bestCPM=0; results=[];
@@ -702,7 +727,7 @@ function beginRun(){
   clearHint();
   nextItem();
   if(tickTimer) clearInterval(tickTimer);
-  tickTimer=setInterval(()=>{ if(!running||paused) return; updateHUD(); if(sessionDur>0 && getElapsed()>=sessionDur){ finishRun(); } },100);
+  tickTimer=setInterval(()=>{ if(!running||paused) return; updateHUD(); if(sessionDur>0 && getElapsed()>=sessionDur){ finishRun('time'); } },100);
 }
 
 /* ========= Collection rendering ========= */
@@ -971,18 +996,41 @@ function updateBrainrotUI(){
 }
 
 /* ========= Finish round ========= */
-function finishRun(){
+function finishRun(reason){
   const endRef=paused?pauseStart:Date.now();
   const elapsed=Math.max(0,(endRef-startMs-pauseAccum)/1000);
   const cpm = elapsed>0 ? (correct/(elapsed/60)) : 0;
-  const base=Math.floor(cpm), bonus=bonusForCPM(cpm), add=(isFinite(base)?base:0) + (isFinite(bonus)?bonus:0);
-  const newRecord=cpm>bestCPM, goalHit=(goalCPM!=null && cpm>=goalCPM);
+
+  // defaults for a normal finish
+  let add=0, bonus=0, newRecord=false, goalHit=false, modeLabel=mode==='add'?'Add/Subtract':'Multiply/Divide';
+
+  // If ended due to errors, award nothing and skip records/rewards
+  if(reason==='errors'){
+    running=false; clearInterval(tickTimer);
+    const usedFamIds=new Set(); for(let i=0;i<idx;i++){ const it=queue[i]; if(it&&it.fam) usedFamIds.add(it.fam); }
+    const fams=[...usedFamIds].map(famLabel).join(' | ');
+    results.unshift({ time:ts(), mode:modeLabel, fams, correct, wrong,
+      dur:Math.round(sessionDur===0?elapsed:Math.min(sessionDur,elapsed)),
+      cpm:+(isFinite(cpm)?cpm.toFixed(1):'0'), bonus:0, add:0 });
+    $('lastCpm').textContent = cpm.toFixed(1);
+    renderResults(); updateHUD(); saveStore();
+    $('runFeedback').textContent = `Round ended due to errors (${wrong}). No points awarded.`;
+    $('eq').innerHTML=`<span class="cell" style="font-size:clamp(18px,3vw,32px)">Ready for a new round – press Start</span>`;
+    clearHint();
+    // No brainrot, no chests, no bestCPM updates, no bank change
+    return;
+  }
+
+  // normal finish (time/manual/empty)
+  const base=Math.floor(cpm); bonus=bonusForCPM(cpm); add=(isFinite(base)?base:0) + (isFinite(bonus)?bonus:0);
+  goalHit=(goalCPM!=null && cpm>=goalCPM);
+  newRecord=cpm>bestCPM;
+
   running=false; clearInterval(tickTimer);
   bankTotal += add; if(newRecord) bestCPM=cpm;
 
   const usedFamIds=new Set(); for(let i=0;i<idx;i++){ const it=queue[i]; if(it&&it.fam) usedFamIds.add(it.fam); }
   const fams=[...usedFamIds].map(famLabel).join(' | ');
-  const modeLabel=mode==='add'?'Add/Subtract':'Multiply/Divide';
 
   results.unshift({ time:ts(), mode:modeLabel, fams, correct, wrong,
     dur:Math.round(sessionDur===0?elapsed:Math.min(sessionDur,elapsed)),
@@ -1042,7 +1090,7 @@ function init(){
   renderLoot();
 
   const activeBtn = document.querySelector('#durChips .chip.active');
-  const d = Number(activeBtn && activeBtn.dataset ? activeBtn.dataset.dur : 60); // <- fixed
+  const d = Number(activeBtn && activeBtn.dataset ? activeBtn.dataset.dur : 60);
   $('timeLeft').textContent = (d===0)?'00:00':fmtTime(d);
   $('progressWrap').style.visibility=(d===0)?'hidden':'visible';
 
